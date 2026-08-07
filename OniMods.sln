@@ -1,0 +1,41 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildOverlappingBuildings", "BuildOverlappingBuildings\BuildOverlappingBuildings.csproj", "{245038D8-AB0D-4378-879D-2C31537B5750}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HideUIButtons", "HideUIButtons\HideUIButtons.csproj", "{AA1B5B38-AFC5-4598-A8CC-E045232756EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AD2B3220-0943-4E00-8ECA-70D55F1C0D24}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
+		NuGet.Config = NuGet.Config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{245038D8-AB0D-4378-879D-2C31537B5750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{245038D8-AB0D-4378-879D-2C31537B5750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{245038D8-AB0D-4378-879D-2C31537B5750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{245038D8-AB0D-4378-879D-2C31537B5750}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA1B5B38-AFC5-4598-A8CC-E045232756EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA1B5B38-AFC5-4598-A8CC-E045232756EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA1B5B38-AFC5-4598-A8CC-E045232756EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA1B5B38-AFC5-4598-A8CC-E045232756EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6084314-4726-4E0D-A525-CDCCEEEC6A21}
+	EndGlobalSection
+EndGlobal

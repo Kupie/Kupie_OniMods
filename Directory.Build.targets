@@ -1,0 +1,53 @@
+<Project>
+  <PropertyGroup Condition="'$(UsePLib)' == 'true'">
+    <PLibAssemblyPath>$([System.IO.Path]::Combine('$(PkgPLib)', 'lib', 'net48', 'PLib.dll'))</PLibAssemblyPath>
+    <OniLibDirectory>$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)', 'lib'))</OniLibDirectory>
+    <MergedAssemblyPath>$([System.IO.Path]::Combine('$(TargetDir)', '$(TargetName).merged.dll'))</MergedAssemblyPath>
+    <PLibMergeStamp>$([System.IO.Path]::Combine('$(IntermediateOutputPath)', '$(TargetName).plibmerge.stamp'))</PLibMergeStamp>
+  </PropertyGroup>
+
+  <Target Name="ValidateOniManagedPath"
+          BeforeTargets="ResolveReferences">
+  
+    <Error Condition="'$(OniManagedPath)' == ''"
+           Text="OniManagedPath is empty. Set it in Directory.Build.local.props or provide the repository lib folder." />
+  
+    <Error Condition="!Exists('$(OniManagedPath)\Assembly-CSharp.dll')"
+           Text="ONI assemblies were not found at '$(OniManagedPath)'. Create Directory.Build.local.props or populate the repository lib folder." />
+  </Target>
+  
+  <Target Name="MergePLibIntoMod"
+          AfterTargets="Build"
+          Condition="'$(UsePLib)' == 'true' And '$(DesignTimeBuild)' != 'true'"
+          Inputs="$(TargetPath);$(PLibAssemblyPath);$(PkgILRepack)"
+          Outputs="$(PLibMergeStamp)">
+    <Error Condition="'$(PkgPLib)' == ''"
+           Text="NuGet did not provide PkgPLib. Restore packages and rebuild." />
+    <Error Condition="'$(PkgILRepack)' == ''"
+           Text="NuGet did not provide PkgILRepack. Restore packages and rebuild." />
+    <Error Condition="!Exists('$(PLibAssemblyPath)')"
+           Text="PLib.dll was not found at $(PLibAssemblyPath)." />
+
+    <ItemGroup>
+      <_ILRepackExecutable Include="$(PkgILRepack)\**\ILRepack.exe" />
+    </ItemGroup>
+
+    <Error Condition="'@(_ILRepackExecutable)' == ''"
+           Text="ILRepack.exe was not found below $(PkgILRepack)." />
+
+    <Message Importance="High" Text="Merging PLib into $(TargetFileName)" />
+    <Delete Files="$(MergedAssemblyPath)" />
+
+    <Exec Condition="'$(OS)' == 'Windows_NT'"
+          Command="&quot;@(_ILRepackExecutable-&gt;'%(FullPath)')&quot; /ndebug /internalize /lib:&quot;$(OniLibDirectory)&quot; /out:&quot;$(MergedAssemblyPath)&quot; &quot;$(TargetPath)&quot; &quot;$(PLibAssemblyPath)&quot; /targetplatform:v4" />
+
+    <Exec Condition="'$(OS)' != 'Windows_NT'"
+          Command="mono &quot;@(_ILRepackExecutable-&gt;'%(FullPath)')&quot; /ndebug /internalize /lib:&quot;$(OniLibDirectory)&quot; /out:&quot;$(MergedAssemblyPath)&quot; &quot;$(TargetPath)&quot; &quot;$(PLibAssemblyPath)&quot; /targetplatform:v4" />
+
+    <Copy SourceFiles="$(MergedAssemblyPath)"
+          DestinationFiles="$(TargetPath)"
+          OverwriteReadOnlyFiles="true" />
+    <Delete Files="$(MergedAssemblyPath)" />
+    <Touch Files="$(PLibMergeStamp)" AlwaysCreate="true" />
+  </Target>
+</Project>

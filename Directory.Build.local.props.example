@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <!--
+    Optional: point directly to Oxygen Not Included's Managed directory.
+
+    Windows example:
+    C:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed
+
+    Leave Directory.Build.local.props absent to use the repository's lib folder.
+    -->
+    <OniManagedPath>C:\Path\To\OxygenNotIncluded_Data\Managed</OniManagedPath>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,138 @@
+<Project>
+  <!--
+    Optional per-developer override. Keep Directory.Build.local.props out of Git.
+
+    Example:
+      <Project>
+        <PropertyGroup>
+          <OniManagedPath>D:\SteamLibrary\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</OniManagedPath>
+        </PropertyGroup>
+      </Project>
+
+    OniManagedPath may also be supplied from the command line:
+      msbuild OniMods.sln /restore /p:OniManagedPath="D:\...\OxygenNotIncluded_Data\Managed"
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.local.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.local.props')" />
+
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+
+    <!-- Common default Steam installation locations. -->
+    <_OniManagedPathSteam32>$(MSBuildProgramFiles32)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</_OniManagedPathSteam32>
+    <_OniManagedPathSteam64>$(ProgramW6432)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</_OniManagedPathSteam64>
+
+    <!-- Preserve a local, environment, or /p:OniManagedPath override. -->
+    <OniManagedPath Condition="'$(OniManagedPath)' == '' And Exists('$(_OniManagedPathSteam32)\Assembly-CSharp.dll')">$(_OniManagedPathSteam32)</OniManagedPath>
+    <OniManagedPath Condition="'$(OniManagedPath)' == '' And Exists('$(_OniManagedPathSteam64)\Assembly-CSharp.dll')">$(_OniManagedPathSteam64)</OniManagedPath>
+
+    <!--
+      Compatibility alias used by the existing Directory.Build.targets ILRepack
+      command. It now points at ONI's Managed directory, not repository\lib.
+    -->
+    <OniLibDirectory>$(OniManagedPath)</OniLibDirectory>
+
+    <UsePLib Condition="'$(MSBuildProjectName)' == 'HideUIButtons' Or
+                         '$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UsePLib>
+
+    <UseNewtonsoftJson Condition="'$(MSBuildProjectName)' == 'HideUIButtons'">true</UseNewtonsoftJson>
+
+    <UseUnityUI Condition="'$(MSBuildProjectName)' == 'HideUIButtons' Or
+                            '$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UseUnityUI>
+
+    <UseUnityInputModule Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UseUnityInputModule>
+
+    <UsePublicizer Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UsePublicizer>
+  </PropertyGroup>
+
+  <!-- ONI and Unity assemblies required by every mod. -->
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(OniManagedPath)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(OniManagedPath)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(OniManagedPath)\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="UnityEngine">
+      <HintPath>$(OniManagedPath)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(OniManagedPath)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="System" />
+  </ItemGroup>
+
+  <!-- Optional Unity UI assemblies. -->
+  <ItemGroup Condition="'$(UseUnityUI)' == 'true'">
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(OniManagedPath)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseTextMeshPro)' == 'true'">
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(OniManagedPath)\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseUnityInputModule)' == 'true'">
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(OniManagedPath)\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Publicizer: unlocks private/internal ONI members for compile-time access. -->
+  <ItemGroup Condition="'$(UsePublicizer)' == 'true'">
+    <PackageReference Include="Krafs.Publicizer" GeneratePathProperty="true">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
+
+  <!-- NuGet packages. -->
+  <ItemGroup Condition="'$(UsePLib)' == 'true'">
+    <PackageReference Include="PLib" GeneratePathProperty="true">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+
+    <PackageReference Include="ILRepack" GeneratePathProperty="true">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseNewtonsoftJson)' == 'true'">
+    <PackageReference Include="Newtonsoft.Json">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Fail with one useful message instead of many missing-reference errors. -->
+  <Target Name="ValidateOniManagedPath" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(OniManagedPath)' == ''"
+           Text="ONI's Managed directory was not found. Create Directory.Build.local.props and set OniManagedPath to your OxygenNotIncluded_Data\Managed directory." />
+
+    <Error Condition="'$(OniManagedPath)' != '' And !Exists('$(OniManagedPath)\Assembly-CSharp.dll')"
+           Text="OniManagedPath points to '$(OniManagedPath)', but Assembly-CSharp.dll was not found there." />
+  </Target>
+</Project>

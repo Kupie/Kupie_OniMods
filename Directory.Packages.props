@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="PLib" Version="4.25.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="ILRepack" Version="2.0.46" />
+    <PackageVersion Include="Krafs.Publicizer" Version="2.3.2" />
+  </ItemGroup>
+</Project>

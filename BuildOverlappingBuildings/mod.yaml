@@ -1,0 +1,3 @@
+title: "Build Overlapping Buildings"
+description: "Hold a configurable key while placing a building to bypass the occupied-location warning."
+staticID: "KupieOverlapBuildings"

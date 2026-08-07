@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<RootNamespace>BuildOverlappingBuildings</RootNamespace>
+		<AssemblyName>BuildOverlappingBuildings</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Update="mod.yaml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="mod_info.yaml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+</Project>
