@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!--
+		  netstandard2.1, not net48 like the other mods in this repo - ONI_Together_API targets
+		  netstandard2.1, and classic .NET Framework can't restore a netstandard2.1
+		  PackageReference at all.
+		-->
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<RootNamespace>MultiplayerCompatPatch</RootNamespace>
+		<AssemblyName>MultiplayerCompatPatch</AssemblyName>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Update="mod.yaml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="mod_info.yaml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>

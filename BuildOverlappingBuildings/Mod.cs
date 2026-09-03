@@ -20,6 +20,8 @@ namespace BuildOverlappingBuildings
 			PUtil.InitLibrary();
 			new POptions().RegisterOptions(this, typeof(BuildOverlappingBuildingsOptions));
 			ReloadOptions();
+			
+			OniTogetherBridge.TryPatch(harmony);
 		}
 
 		internal static void ReloadOptions()

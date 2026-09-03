@@ -4,7 +4,7 @@ using PeterHan.PLib.Options;
 namespace HideUIButtons
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	[ModInfo("https://github.com/Kupie/Berkays_OniMods")]
+	[ModInfo("https://github.com/Kupie/Kupie_OniMods")]
 	public class ToolbarButtonOptions
 	{
 		[Option("Hide Dig", "Hides the Dig button.", "Basic Tools")]

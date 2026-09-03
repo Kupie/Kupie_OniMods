@@ -11,8 +11,8 @@ using UnityEngine;
 namespace BuildOverlappingBuildings
 {
 
-	[RestartRequired]
-	public sealed class BuildOverlappingBuildingsOptions
+    [RestartRequired]
+    public sealed class BuildOverlappingBuildingsOptions
     {
         [Option("Overlap Override Key", "Hold this key while placing a building to ignore the occupied location warning.")]
         public KeyCode AllowOverlapKey { get; set; } = KeyCode.Semicolon;
@@ -61,18 +61,20 @@ namespace BuildOverlappingBuildings
      )]
     public static class Patches
     {
-		private static int lastForcedRefreshFrame = -1;
+        private static int lastForcedRefreshFrame = -1;
         static void Postfix(ref bool __result, string fail_reason)
         {
             var overlapKey = Mod.Options?.AllowOverlapKey ?? KeyCode.Semicolon;
+            bool wantsOverlap = Input.GetKey(overlapKey) || OniTogetherBridge.IncomingPlacement;
 
-            if (!__result && fail_reason == UI.TOOLTIPS.HELP_BUILDLOCATION_OCCUPIED && Input.GetKey(overlapKey))
+            if (!__result && fail_reason == UI.TOOLTIPS.HELP_BUILDLOCATION_OCCUPIED && wantsOverlap)
             {
                 KupieLogging.KupieLog("IsAreaClear Postfix ran!");
                 __result = true;
             }
-			
-			// Update the ghost too, but gate it on once per frame because otherwise we get R E C U R S I O N
+
+            // Ghost refresh only makes sense for your own local key-held aiming - untouched,
+            // still gated on Input.GetKeyDown/Up, never fires for a remote placement.
             if (Time.frameCount != lastForcedRefreshFrame
                 && (Input.GetKeyDown(overlapKey) || Input.GetKeyUp(overlapKey))
                 && BuildTool.Instance != null && BuildTool.Instance.active
@@ -82,8 +84,6 @@ namespace BuildOverlappingBuildings
                 Vector3 pos = Grid.CellToPosCCC(BuildTool.Instance.lastCell, Grid.SceneLayer.Building);
                 BuildTool.Instance.UpdateVis(pos);
             }
-
-			
         }
     }
 }

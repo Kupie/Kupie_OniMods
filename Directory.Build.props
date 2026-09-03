@@ -35,14 +35,18 @@
     <UsePLib Condition="'$(MSBuildProjectName)' == 'HideUIButtons' Or
                          '$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UsePLib>
 
-    <UseNewtonsoftJson Condition="'$(MSBuildProjectName)' == 'HideUIButtons'">true</UseNewtonsoftJson>
+    <UseNewtonsoftJson Condition="'$(MSBuildProjectName)' == 'HideUIButtons' Or
+                                  '$(MSBuildProjectName)' == 'MultiplayerCompatPatch'">true</UseNewtonsoftJson>
 
     <UseUnityUI Condition="'$(MSBuildProjectName)' == 'HideUIButtons' Or
                             '$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UseUnityUI>
 
-    <UseUnityInputModule Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UseUnityInputModule>
+    <UseUnityInputModule Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings' Or
+                                    '$(MSBuildProjectName)' == 'MultiplayerCompatPatch'">true</UseUnityInputModule>
 
     <UsePublicizer Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UsePublicizer>
+
+    <UseOniTogetherApi Condition="'$(MSBuildProjectName)' == 'MultiplayerCompatPatch'">true</UseOniTogetherApi>
   </PropertyGroup>
 
   <!-- ONI and Unity assemblies required by every mod. -->
@@ -108,6 +112,10 @@
   </ItemGroup>
 
   <!-- NuGet packages. -->
+  <ItemGroup Condition="'$(UseOniTogetherApi)' == 'true'">
+    <PackageReference Include="ONI_Together_API" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(UsePLib)' == 'true'">
     <PackageReference Include="PLib" GeneratePathProperty="true">
       <PrivateAssets>all</PrivateAssets>
