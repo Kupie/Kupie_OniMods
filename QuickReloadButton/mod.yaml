@@ -1,0 +1,3 @@
+title: "Quick Reload"
+description: "Adds a Quick Reload button to the pause menu (between Load and Options) that saves and immediately reloads the active save."
+staticID: "Kupie.QuickReloadButton"
