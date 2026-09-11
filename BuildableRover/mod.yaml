@@ -1,0 +1,3 @@
+title: "Buildable Rover"
+description: "Adds a Rover building: costs the same 500kg of raw metal as a real Rover's Module, but builds on the ground like any other building"
+staticID: "Kupie.BuildableRover"
