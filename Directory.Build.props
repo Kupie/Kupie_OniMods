@@ -38,18 +38,26 @@
     <UseNewtonsoftJson Condition="'$(MSBuildProjectName)' == 'HideUIButtons' Or
                                   '$(MSBuildProjectName)' == 'MultiplayerCompatPatch'">true</UseNewtonsoftJson>
 
-    <UseUnityUI Condition="'$(MSBuildProjectName)' == 'HideUIButtons' Or
-                            '$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UseUnityUI>
-
     <UseUnityInputModule Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings' Or
                                     '$(MSBuildProjectName)' == 'MultiplayerCompatPatch'">true</UseUnityInputModule>
 
-    <UsePublicizer Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings'">true</UsePublicizer>
+    <UsePublicizer Condition="'$(MSBuildProjectName)' == 'BuildOverlappingBuildings' Or
+                           '$(MSBuildProjectName)' == 'VSyncFpsLimiter'">true</UsePublicizer>
 
     <UseOniTogetherApi Condition="'$(MSBuildProjectName)' == 'MultiplayerCompatPatch'">true</UseOniTogetherApi>
   </PropertyGroup>
 
-  <!-- ONI and Unity assemblies required by every mod. -->
+  <!--
+    ONI and Unity assemblies required by every mod. UnityEngine.UI and
+    Unity.TextMeshPro live here unconditionally rather than behind their own
+    Use* switches (like UseUnityInputModule below) because almost any mod
+    that touches ONI's UI at all ends up needing both sooner or later -
+    LocText alone (used everywhere) is a TextMeshProUGUI, which is itself a
+    MaskableGraphic from UnityEngine.UI. Referencing them unconditionally
+    costs nothing at runtime (Private=false, so nothing gets copied unless a
+    project actually uses types from them) and saves the next mod the same
+    three-error discovery loop VSyncFpsLimiter just went through.
+  -->
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>$(OniManagedPath)\0Harmony.dll</HintPath>
@@ -76,22 +84,17 @@
       <Private>false</Private>
     </Reference>
 
-    <Reference Include="System" />
-  </ItemGroup>
-
-  <!-- Optional Unity UI assemblies. -->
-  <ItemGroup Condition="'$(UseUnityUI)' == 'true'">
     <Reference Include="UnityEngine.UI">
       <HintPath>$(OniManagedPath)\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
-  </ItemGroup>
 
-  <ItemGroup Condition="'$(UseTextMeshPro)' == 'true'">
     <Reference Include="Unity.TextMeshPro">
       <HintPath>$(OniManagedPath)\Unity.TextMeshPro.dll</HintPath>
       <Private>false</Private>
     </Reference>
+
+    <Reference Include="System" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseUnityInputModule)' == 'true'">

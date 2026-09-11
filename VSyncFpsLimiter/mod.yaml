@@ -1,0 +1,3 @@
+title: "VSync & FPS Limiter"
+description: "Adds VSync and FPS Limit controls to the DISPLAY section of the in-game Graphics Options screen, right after Low Resolution Textures."
+staticID: "Kupie.VSyncFpsLimiter"
